@@ -9,6 +9,7 @@ app.get('/users', async (req, res) => {
     const result = await knex
         .select("*")
         .from('users')
+        .where('deleted_at', null)
 
     return res.json(result)
 })
@@ -41,9 +42,59 @@ app.delete('/users/:id', async (req,res) => {
 
     await knex('users')
     .where({ id })
-    .delete()
+    .update({ deleted_at: new Date()})
 
     return res.json({ message: "ok" })
+})
+
+app.get('/users/:id/projects', async(req, res, next) => {
+    const { id } = req.params;
+
+    try {
+        const result = await knex('projects')
+        .where({user_id: id})
+        .where('users.deleted_at', null)
+        .join('users', 'users.id', '=', 'projects.user_id')
+        .select("projects.*", "users.username")
+    
+        return res.json(result)
+
+    }catch(e) {
+        next(e)
+    }
+    
+})
+
+app.put('/projects/:id', async (req, res, next) => {
+    const { id } = req.params
+
+    try {
+        await knex('projects')
+        .where({id})
+        .update(req.body)
+    
+        return res.json(req.body)
+
+    }catch(e) {
+        next(e) 
+    }
+})
+
+// notFound
+app.use((req, res, next) => {
+    const error = new Error("Not Found")
+    error.status = 404
+    next(error)
+})
+
+// general error
+app.use((error, req, res, next) => {
+    res.status(error.status || 500)
+    res.json({
+        error: {
+            message: error.message
+        }
+    })
 })
 
 app.listen(3000, () =>  console.log('server is running'))
