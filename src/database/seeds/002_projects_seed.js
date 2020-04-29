@@ -7,7 +7,7 @@ exports.seed = function(knex) {
       return knex('projects').insert([
         {
           user_id: 1,
-          name: 'Sample Project',
+          title: 'Sample Project',
           description: "This is just a sample project!"
         }
       ]);

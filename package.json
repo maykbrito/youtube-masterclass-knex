@@ -2,11 +2,9 @@
   "name": "youtube-masterclass-knex",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "db:migrate": "npx knex migrate:latest",
-    "db:seed": "npx knex seed:run"
+    "start": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "",

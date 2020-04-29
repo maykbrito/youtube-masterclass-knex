@@ -1,15 +1,17 @@
 exports.up = knex =>
     knex.schema.createTable('projects', t => {
-        t.increments('id').primary().unsigned()
+        t.increments('id')
+
+        // relacionamento
         t.integer('user_id')
             .references('users.id')
-            .unsigned()
+            .notNullable()
             .onDelete('CASCADE')
-        t.string('name')
+
+        t.text('title')
         t.text('description')
-        t.timestamp('completed_at')
-        t.timestamp('created_at').defaultTo(knex.fn.now())
-        t.timestamp('updated_at').defaultTo(knex.fn.now())
+
+        t.timestamps(true, true)
     })
 
 exports.down = knex => 
